@@ -153,9 +153,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       final filename = uri.pathSegments.last; // last segment is the filename
       if (filename.isEmpty) return;
       await supabase.storage.from('profile-images').remove([filename]);
-      print("Deleted old profile image: $filename");
+      //print("Deleted old profile image: $filename");
     } catch (e) {
-      print("Failed to delete old profile image: $e");
+      //print("Failed to delete old profile image: $e");
     }
   }
 

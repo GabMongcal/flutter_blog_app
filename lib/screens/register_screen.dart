@@ -74,6 +74,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       // After successful signup and profile creation, go back to login screen
       Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Registration successful!'),
+          backgroundColor: wineColor,
+        ),
+      );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

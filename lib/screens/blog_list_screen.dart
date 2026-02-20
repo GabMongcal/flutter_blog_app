@@ -212,7 +212,13 @@ class _BlogListScreenState extends State<BlogListScreen> {
         hasMore = (from + pageSize) < totalCount;
       });
     } catch (e) {
-      print('Error fetching blogs: $e');
+      // Show error snackbar if fetching blogs fails
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error fetching blogs: $e'),
+          duration: Duration(seconds: 2),
+        ),
+      );
     }
 
     setState(() {

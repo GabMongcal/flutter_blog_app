@@ -54,7 +54,8 @@ class _CommentSectionState extends State<CommentSection> {
   // ADD COMMENT WITH OPTIONAL IMAGES
   Future<void> addComment() async {
     final user = supabase.auth.currentUser;
-    if (user == null || _commentController.text.trim().isEmpty) return;
+    if (user == null || _commentController.text.trim().isEmpty)
+      return; // Basic validation: ensure user is logged in and comment is not empty
 
     setState(() => isLoading = true);
 
@@ -74,7 +75,7 @@ class _CommentSectionState extends State<CommentSection> {
           'profile_pic': profile['profile_pic'],
           'content': _commentController.text.trim(),
         })
-        .select()
+        .select() // Get the inserted comment with its generated ID to associate images
         .single();
 
     final commentId = inserted['id'];
@@ -224,8 +225,12 @@ class _CommentSectionState extends State<CommentSection> {
                                 child: GestureDetector(
                                   onTap: () {
                                     setDialogState(() {
-                                      imagesMarkedForDeletion.add(img);
-                                      existingImages.remove(img);
+                                      imagesMarkedForDeletion.add(
+                                        img,
+                                      ); // Mark image for deletion but keep in existingImages for now to avoid UI flicker until confirmed
+                                      existingImages.remove(
+                                        img,
+                                      ); // Mark image for deletion and remove from UI immediately
                                     });
                                   },
                                   child: Container(
@@ -268,6 +273,7 @@ class _CommentSectionState extends State<CommentSection> {
                                   fit: BoxFit.cover,
                                 ),
                               ),
+                              // Remove (X) Button for new images
                               Positioned(
                                 top: -6,
                                 right: -6,
@@ -296,7 +302,7 @@ class _CommentSectionState extends State<CommentSection> {
                       ),
 
                     const SizedBox(height: 12),
-
+                    // Button to pick new images to add
                     TextButton.icon(
                       onPressed: () async {
                         final picked = await _picker.pickMultiImage();
@@ -379,6 +385,7 @@ class _CommentSectionState extends State<CommentSection> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text('Comment edited successfully!'),
+                            duration: Duration(seconds: 2),
                           ),
                         );
                       }
@@ -421,13 +428,14 @@ class _CommentSectionState extends State<CommentSection> {
 
   @override
   Widget build(BuildContext context) {
+    // Wine color palette consistent with Login and Edit Profile screens.
     const wineColor = Color(0xFF6F1D1B);
     const wineAccent = Color(0xFFB67B8F);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Divider(),
+        const Divider(), // Visual separation from blog content
         const SizedBox(height: 8),
         const Text(
           'Comments',
@@ -585,8 +593,8 @@ class _CommentSectionState extends State<CommentSection> {
 
         const SizedBox(height: 16),
 
-        // PREVIEW SELECTED IMAGES (WITH REMOVE BUTTON)
-        if (selectedImages.isNotEmpty)
+        if (selectedImages
+            .isNotEmpty) // Preview of newly selected images before posting comment
           Wrap(
             spacing: 6,
             runSpacing: 6,
